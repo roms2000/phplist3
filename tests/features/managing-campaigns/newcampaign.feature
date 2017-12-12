@@ -9,6 +9,7 @@ Feature: Create new campaign
         Given I follow "Campaigns"
         Given I follow "Send a campaign"
         # FIXME: won't work on travis
+        #"start a new campaign" is capitalized on hosted version
         Given I follow "start a new campaign"
         Then I should see "Campaign subject"
         When I fill in "subject" with "This is a test subject"
@@ -34,7 +35,8 @@ Feature: Create new campaign
   # Switch to using a scenario outline that tests subaccounts also
     Scenario: Select a list to send the campaign to
         Given I have logged in as an administrator
-        When I follow "Send a campaign"
+        Given I follow "Campaigns"
+        Given I follow "Send a campaign"
         # FIXME: won't work on travis
         When I follow "start a new campaign"
         When I follow "Lists"
@@ -42,6 +44,8 @@ Feature: Create new campaign
         Then I should see "Please select the lists you want to send your campaign to:"
         And the "targetlist[all]" checkbox should not be checked
         And the "targetlist[allactive]" checkbox should not be checked
+        Given I follow "Finish"
+        Then I should see "Some required information is missing. The send button will be enabled when this is resolved."
 
 
 
