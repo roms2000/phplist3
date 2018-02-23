@@ -18,6 +18,7 @@ default:
                     admin_password : YOUR_ADMIN_PASSWORD
     extensions:
         Behat\MinkExtension:
+            files_path: %paths.base%/tests/files/
             # Change to the URL where phpList is running that should be tested
             base_url:  'http://localhost/phplist3/public_html/lists/'
             show_auto: false

@@ -1,0 +1,15 @@
+Feature: Manage admins
+    In order to give other people access to my phpLIst Installation
+    As an admin user
+    I need to be able to add them, define right access and check people I have added
+
+Scenario: Check options on the admin page
+    Given I have logged in as an administrator
+    Given I follow "Config"
+    Given I follow "Manage administrators"
+    Then I should see "Add new admin"
+    And I should see "Find an admin:"
+    And I should see "Administrators"
+    And I should see "Import list of admins"
+
+

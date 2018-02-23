@@ -1,10 +1,26 @@
 <?php
+use Behat\Mink\Exception\DriverException;
+use Behat\Mink\Selector\Xpath\Escaper;
+use WebDriver\Element;
+use WebDriver\Exception\NoSuchElement;
+use WebDriver\Exception\UnknownCommand;
+use WebDriver\Exception\UnknownError;
+use WebDriver\Exception;
+use WebDriver\Key;
+use WebDriver\WebDriver;
 
 use Behat\Behat\Context\Context;
 
 use Behat\Mink\Exception\ExpectationException;
 use Behat\MinkExtension\Context\MinkContext;
-#use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\MinkExtension\Context\RawMinkContext;
+
+use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Exception\ResponseTextException;
+use Behat\Mink\Exception\ElementNotFoundException;
+use WebDriver\Exception\StaleElementReference;
+use Behat\Behat\Tester\Exception\PendingException;
+
 
 //
 // Require 3rd-party libraries here:
@@ -16,6 +32,7 @@ use Behat\MinkExtension\Context\MinkContext;
 /**
  * Features context.
  */
+
 class FeatureContext extends MinkContext
 {
     private $params = array();
@@ -217,5 +234,101 @@ class FeatureContext extends MinkContext
         if (null === $this->getSession ()->getPage ()->find ('named', array('content', 'Dashboard'))) {
             $this->throwExpectationException('Login failed: Dashboard link not found');
         }
+    }
+  
+   /**
+     * @When I switch to iframe :arg1
+     */
+    public function iSwitchToIframe($arg1)
+    {  $arg1=$this->find("css",'cke_wysiwyg_frame cke_reset');
+        $this->getSession()->switchToIFrame($arg1);
+       
+    }
+    
+    /**
+     * Go back to main document frame.
+     *
+     * @When (I )switch to main frame
+     */
+    public function switchToMainFrame()
+    {
+        $this->getSession()->getDriver()->switchToDefaultContent(); 
+    }
+
+    /**
+     * @Then I click on :arg1
+     */
+    public function iClickOn($arg1)
+    {  $arg1= $this->find("css",'submit btn btn-primary');
+       $this->getSession()->click($arg1);
+    }
+     /**
+     * @When I enter text :arg1
+     */
+    public function iEnterText($arg1)
+    { $this->getSession()->executeScript("document.body.innerHTML = '<p>".$arg1."</p>'");}
+
+       /**
+     * @When I switch back from iframe
+     */
+    public function iSwitchBackFrom($name=null)
+    {
+     $driver = $this->getSession()->getDriver();
+     driver.switchToDefaultContent(); 
+    }
+
+      /**
+     * @Then I switch to other iframe :arg1
+     */
+    public function iSwitchToOtherIframe($arg1)
+    {
+      $this->getSession()->switchToIframe($arg1);
+    }
+
+    /**
+     * @Given I mouse over :arg1
+     */
+    public function iMouseOver($arg1)
+    {
+         $page = $this->getSession()->getPage();
+    $findName = $page->find("xpath", '//*[@id="menuTop"]/ul[5]/li');
+    if (!$findName) {
+        throw new Exception($arg1 . " could not be found");
+    } else {
+        $findName->mouseOver();
+    }
+}
+
+ /**
+     * @Then The div#context-menu.block.menu color should be black
+     */
+    public function theDivContextMenuBlockMenuColorShouldBeBlack()
+    {
+
+        // JS script that makes the CSS assertion in the browser.
+
+        $script = <<<JS
+            (function(){
+                return $('div#context-menu.block.menu').css('color') === 'rgb(51, 51, 51)';
+            })();
+JS;
+
+        if (!$this->getSession()->evaluateScript($script)) {
+            throw new Exception();
+        }
+    }
+          /**
+     * @Then I should see :message on popups
+     */
+    public function iShouldSeeOnPopups($message)
+    {   return $message == $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+    
+    }
+     /**
+     * @When I confirm the popup
+     */
+    public function iConfirmPopup()
+    {  
+    $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
     }
 }

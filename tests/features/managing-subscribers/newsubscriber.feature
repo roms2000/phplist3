@@ -12,15 +12,15 @@ Feature: Import subscribers
     And I should see "import by uploading a file with emails"
     And I should see "import by uploading a CSV file with emails and additional data"
     When I follow "copy and paste list of emails"
-    Then I should be on "http://localhost/lists/admin/?page=importsimple"
+    Then I should be on "/lists/admin/?page=importsimple"
     #When I follow "import by uploading a file with emails"
-    #Then I should be on "http://localhost/lists/admin/?page=import1"
+    #Then I should be on "/lists/admin/?page=import1"
     #But When I follow "import by uploading a CSV file with emails and #additional data"
-    #Then I should be on "http://localhost/lists/admin/?page=import2"
+    #Then I should be on "/lists/admin/?page=import2"
 
   Scenario:Import subscribers using copy&paste 
     Given I have logged in as an administrator
-    Given I am on "http://localhost/lists/admin/?page=import"
+    Given I am on "/lists/admin/?page=import"
     Given I follow "copy and paste list of emails"
     Then I should see "Select the lists to add the emails to"
     Given I check "importlists[all]"
@@ -38,17 +38,17 @@ Feature: Import subscribers
 
   Scenario:Import subscribers by uploading a file with emails
     Given I have logged in as an administrator
-    Given I am on "http://localhost/lists/admin/?page=import"
+    Given I am on "/lists/admin/?page=import"
     Given I follow "import by uploading a file with emails"
     Then I should see "Select the lists to add the emails to"
     Given I check "importlists[all]"
-    When I attach the file "import.test.txt" to "import_file"
+    When I attach the file "importFile.txt" to "import_file"
     When I press "Import"
     Then I should see "Test output::" 
     
 
   Scenario:Import subscribers by uploading a file with emails
     Given I have logged in as an administrator
-    Given I am on "http://localhost/lists/admin/?page=import"
+    Given I am on "/lists/admin/?page=import"
     Given I follow "import by uploading a CSV file with emails and additional data"
     Then I should see "Select the lists to add the emails to"
