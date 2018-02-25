@@ -25,14 +25,13 @@ Feature: Create, edit, categorize and delete lists
            Given I follow "Subscribers"
            Given I follow "Subscriber lists"
            Then I should see "Categorise lists" 
-           When I follow "Categorise lists"
+           Given I click over "Categorise lists"
            Then I should see "Configure categories"
            Given I follow "Configure categories"
            Then I should see "Editing Categories for lists. Separate with commas."
-           When I fill in "values[list_categories]"
-           And I follow "Save changes"
-           Then I should see "Category"
-           
+           When I fill in "values[list_categories]" with "First Category, Second Category"
+           And I press "Save changes"
+           When I should see "Choose category"
 
  Scenario: Edit a list
            Given I have logged in as an administrator

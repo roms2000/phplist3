@@ -2,6 +2,7 @@
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Selector\Xpath\Escaper;
 use WebDriver\Element;
+use \Behat\Mink\Element\NodeElement;
 use WebDriver\Exception\NoSuchElement;
 use WebDriver\Exception\UnknownCommand;
 use WebDriver\Exception\UnknownError;
@@ -266,15 +267,48 @@ class FeatureContext extends MinkContext
      * @When I enter text :arg1
      */
     public function iEnterText($arg1)
-    { $this->getSession()->executeScript("document.body.innerHTML = '<p>".$arg1."</p>'");}
+    { 
+
+        $script = <<<JS
+            (function(){
+        CKEDITOR.instances.message.setData( '<p>This is the editor data.</p>' ); })();
+JS;
+    //$this->getSession()->executeScript("document.body.innerHTML = '<p>".$arg1."</p>'");}
+      $this->getSession()->evaluateScript($script);
+    }
+      /**
+     * @Then I should read :arg1
+     */
+    public function iShouldRead($arg1)
+    {
+        $script = <<<JS
+        (function(){
+            CKEDITOR.instances.message.getData();})();
+
+JS;
+  $this->getSession()->evaluateScript($script);
+    }
+       /**
+     * @Then :arg1 checkbox should be checked
+     */
+
+   /**
+    * @Then /^Radio button with id "([^"]*)" should be checked$/
+    */
+   public function RadioButtonWithIdShouldBeChecked($sId)
+   {
+       $elementByCss = $this->getSession()->getPage()->find('css', 'input[type="radio"]:checked#'.$sId);
+       if (!$elementByCss) {
+           throw new Exception('Radio button with id ' . $sId.' is not checked');
+       }
+   }
 
        /**
      * @When I switch back from iframe
      */
     public function iSwitchBackFrom($name=null)
     {
-     $driver = $this->getSession()->getDriver();
-     driver.switchToDefaultContent(); 
+     $this->getSession()->getDriver()->switchToIframe(null);
     }
 
       /**
@@ -284,7 +318,7 @@ class FeatureContext extends MinkContext
     {
       $this->getSession()->switchToIframe($arg1);
     }
-
+    
     /**
      * @Given I mouse over :arg1
      */
@@ -298,6 +332,26 @@ class FeatureContext extends MinkContext
         $findName->mouseOver();
     }
 }
+     /**
+     * @Given I click over :arg1
+     */
+    public function iClickOver($arg1)
+    {
+         $page = $this->getSession()->getPage();
+    $findName = $page->find("xpath", '//*[@id="wrapp"]/form/div[1]/a[1]');
+    if (!$findName) {
+        throw new Exception($arg1 . " could not be found");
+    } else {
+        $findName->click();
+    }
+}
+       /**
+     * @Given I go back
+     */
+    public function iGoBack()
+    {
+        $this->getSession()->getDriver()->back();
+    }
 
  /**
      * @Then The div#context-menu.block.menu color should be black
